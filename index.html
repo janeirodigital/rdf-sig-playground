@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <title>RDF Signature Example</title>
+    <style>
+      button { background-color: lightgreen; }
+      .fake-link {
+          color: blue;
+          /*text-decoration: underline;*/
+          cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="examples">
+      <h1 style="display:inline">RDF Signature Example</h1>
+      <span>(with CSS from the 90s)</span>
+    </div>
+    <div style="padding: 3ex 0;">
+      <h2 style="display: inline;">sign</h2>
+      <input id="signNode" style="width: 32ex;"></input>
+      <h2 style="display: inline;">in:</h2>
+    </div>
+    <textarea id="signGraph" cols=132, rows=8></textarea>
+    <div style="padding: 3ex 0;">
+      <h2 style="display: inline;">with proof node</h2>
+      <input id="proofNode" style="width: 32ex;"></input>
+      <span class="fake-link" title="will be replaced with a fresh bnode">†</span>
+      <h2 style="display: inline;">in:</h2>
+    </div>
+    <textarea id="withProof" cols=132, rows=8></textarea>
+    <h2>and private key:</h2>
+    <label for="keyId" style="padding-left: 8em;">keyId:</label> <textarea id="keyId" cols=100, rows=1></textarea><br/>
+    <label for="issuer" style="padding-left: 8em;">issuer:</label> <textarea id="issuer" cols=100, rows=1></textarea><br/>
+    <label for="privKey" style="padding-left: 8em;">Base58:</label> <textarea id="privKey" cols=100, rows=1></textarea>
+    <div style="padding: 3ex 0;">
+      <button id="sign">sign</button>
+      <h2 style="display: inline;">produces:</h2>
+    </div>
+    <textarea id="signed" cols=132, rows=15></textarea>
+    <br/>
+    <button id="copyDown">copy to signed graph</button>
+    <h2>test signed graph:</h2>
+    <textarea id="verifyMe" cols=132, rows=10></textarea>
+    <h2>with public key:</h2>
+    <textarea id="pubKey" cols=132, rows=1></textarea>
+    <p>
+      <button id="verify">verify</button> <input id="result" style="width: 100ex;"></input>
+    </p>
+    <script src="rdf-sig.js"></script>
+    <script src="index.js">
+    </script>
+  </body>
+</html>

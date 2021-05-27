@@ -1,0 +1,28 @@
+{
+  "name": "rdf-sig-playground",
+  "version": "1.0.0",
+  "description": "online playground for RDF Signatures",
+  "main": "toy.js",
+  "scripts": {
+    "build": "browserify requires.js -o rdf-sig.js -s rdfsig",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janeirodigital/rdf-sig-playground.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/janeirodigital/rdf-sig-playground/issues"
+  },
+  "homepage": "https://github.com/janeirodigital/rdf-sig-playground#readme",
+  "devDependencies": {
+    "browserify": "^17.0.0",
+    "buffer": "^6.0.3",
+    "crypto-ld": "^6.0.0",
+    "graphy": "^4.3.3",
+    "jsonld-signatures": "^9.0.2"
+  }
+}
