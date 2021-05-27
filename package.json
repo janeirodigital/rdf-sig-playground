@@ -21,8 +21,8 @@
   "devDependencies": {
     "browserify": "^17.0.0",
     "buffer": "^6.0.3",
-    "crypto-ld": "^6.0.0",
+    "crypto-ld": "^3.9.0",
     "graphy": "^4.3.3",
-    "jsonld-signatures": "^9.0.2"
+    "jsonld-signatures": "^5.2.0"
   }
 }
