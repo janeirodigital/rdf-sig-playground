@@ -47,65 +47,69 @@ function fill (fields) {
 $('#sign')[0].onclick = async function (evt) {
   debugger; // so folks can follow along
 
-  // Grab parms from form.
-  const vals = (['signGraph', 'signNode', 'withProof', 'proofNode', 'privKey']).reduce((acc, key) => {
-    acc[key] = $('#' + key)[0].value;
-    return acc;
-  }, {});
-  const f = graphy.core.data.factory;
-  const [signGraph, withProof] = await Promise.all([
-    parse('ttl', vals.signGraph),
-    parse('ttl', vals.withProof),
-  ]);
-  const signNode = f.namedNode(vals.signNode);
-  const proofNode = f.namedNode(vals.proofNode);
+  try {
+    // Grab parms from form.
+    const vals = (['signGraph', 'signNode', 'withProof', 'proofNode', 'privKey']).reduce((acc, key) => {
+      acc[key] = $('#' + key)[0].value;
+      return acc;
+    }, {});
+    const f = graphy.core.data.factory;
+    const [signGraph, withProof] = await Promise.all([
+      parse('ttl', vals.signGraph),
+      parse('ttl', vals.withProof),
+    ]);
+    const signNode = f.namedNode(vals.signNode);
+    const proofNode = f.namedNode(vals.proofNode);
 
-  // Copy embeddeed proof with BlankNode subject.
-  const embeddedProofNode = f.blankNode();
-  const anonymousProof = graphy.memory.dataset.fast();
-  ([...withProof.data.quads(null, null, null, null)]).map(q => {
-    if (q.subject.equals(proofNode))
-      q.subject = embeddedProofNode;
-    if (q.object.equals(proofNode))
-      q.object = embeddedProofNode;
-    anonymousProof.add(q);
-  });
+    // Copy embeddeed proof with BlankNode subject.
+    const embeddedProofNode = f.blankNode();
+    const anonymousProof = graphy.memory.dataset.fast();
+    ([...withProof.data.quads(null, null, null, null)]).map(q => {
+      if (q.subject.equals(proofNode))
+        q.subject = embeddedProofNode;
+      if (q.object.equals(proofNode))
+        q.object = embeddedProofNode;
+      anonymousProof.add(q);
+    });
 
-  // Construct signing (private) key.
-  const keyPair1priv = await Ed25519KeyPair.generate({
-    privateKeyBase58: vals.privKey,
-  });
-  
-  // Compose signature applies to concatonation of both graphs.
-  const verifyData = await urdnaizeDocs([
-    await write('nt', [...anonymousProof.quads()]),
-    await write('nt', [...signGraph.data.quads()]),
-  ]);
-  const jws = await createJWS(verifyData, keyPair1priv.signer());
+    // Construct signing (private) key.
+    const keyPair1priv = await Ed25519KeyPair.generate({
+      privateKeyBase58: vals.privKey,
+    });
 
-  // Add jws token to proof.
-  anonymousProof.add(f.quad(
-    embeddedProofNode,
-    f.namedNode('https://w3id.org/security#jws'), // sec:jws
-    f.literal(jws)
-  ));
+    // Compose signature applies to concatonation of both graphs.
+    const verifyData = await urdnaizeDocs([
+      await write('nt', [...anonymousProof.quads()]),
+      await write('nt', [...signGraph.data.quads()]),
+    ]);
+    const jws = await createJWS(verifyData, keyPair1priv.signer());
 
-  // Connect proof to signed node.
-  signGraph.data.add(f.quad(
-    signNode,
-    f.namedNode('https://w3id.org/security#proof'), // sec:proof
-    embeddedProofNode
-  ));
+    // Add jws token to proof.
+    anonymousProof.add(f.quad(
+      embeddedProofNode,
+      f.namedNode('https://w3id.org/security#jws'), // sec:jws
+      f.literal(jws)
+    ));
 
-  // Write composite graph to UI.
-  signGraph.data.addAll(anonymousProof.quads());
-  const text = await write('ttl', [...signGraph.data], {
-    prefixes: Object.assign({}, {
-      cred: 'https://www.w3.org/2018/credentials#',
-      rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-    }, signGraph.prefixes, withProof.prefixes)
-  });
-  $('#signed')[0].value = text;
+    // Connect proof to signed node.
+    signGraph.data.add(f.quad(
+      signNode,
+      f.namedNode('https://w3id.org/security#proof'), // sec:proof
+      embeddedProofNode
+    ));
+
+    // Write composite graph to UI.
+    signGraph.data.addAll(anonymousProof.quads());
+    const text = await write('ttl', [...signGraph.data], {
+      prefixes: Object.assign({}, {
+        cred: 'https://www.w3.org/2018/credentials#',
+        rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+      }, signGraph.prefixes, withProof.prefixes)
+    });
+    $('#signed')[0].value = text;
+  } catch (e) {
+    $('#signed')[0].value = 'Error: ' + (typeof e === 'object' ? 'message' in e ? e.message : JSON.stringify(e) : e)
+  }
 }
 
 $('#copyDown')[0].onclick = function (evt) {
