@@ -45,6 +45,8 @@ function fill (fields) {
 
 // When sign is clicked...
 $('#sign')[0].onclick = async function (evt) {
+  debugger; // so folks can follow along
+
   // Grab parms from form.
   const vals = (['signGraph', 'signNode', 'withProof', 'proofNode', 'privKey']).reduce((acc, key) => {
     acc[key] = $('#' + key)[0].value;
@@ -112,6 +114,8 @@ $('#copyDown')[0].onclick = function (evt) {
 
 // When verify is clicked...
 $('#verify')[0].onclick = async function (evt) {
+  debugger; // so folks can follow along
+
   try {
     // Grab parms from form.
     const vals = (['verifyMe', 'pubKey', 'keyId']).reduce((acc, key) => {
