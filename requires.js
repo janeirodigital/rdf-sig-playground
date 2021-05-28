@@ -10,4 +10,5 @@ module.exports = {
   util,
   graphy,
   Buffer: require('buffer').Buffer,
+  jsYaml: require('js-yaml'),
 }

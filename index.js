@@ -1,39 +1,32 @@
-const {Ed25519KeyPair, jsonld, util, Buffer} = rdfsig;
+const {Ed25519KeyPair, jsonld, util, Buffer, jsYaml} = rdfsig;
 const $ = document.querySelectorAll.bind(document);
+const DefaultManifest = ['examples/toy.yaml'];
 
-const Examples = {
-  'vc-like example': {
-    signNode: 'https://a.example/vc1',
-    signGraph: `PREFIX vc: <https://www.w3.org/2018/credentials#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-<https://a.example/vc1> a vc:VerifiableCredential ;
-    vc:issuanceDate "2021-03-24T08:27:17Z"^^xsd:dateTime ;
-    vc:issuer <https://a.example/issuer1> ;
-    vc:credentialSubject <http://a.example/somethingToSign> .
-<http://a.example/somethingToSign> <https://a.example#fileIntegrityHash> "1234abcd" . # random assertion
-`,
-    proofNode: 'http://a.example/proof1',
-    withProof: `PREFIX dc: <http://purl.org/dc/terms/>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX sec: <https://w3id.org/security#>
-<http://a.example/proof1> a sec:Ed25519Signature2018 ;
-    dc:created "2020-01-01T00:00:00Z"^^xsd:dateTime ;
-    sec:proofPurpose sec:assertionMethod ;
-    sec:verificationMethod <https://www.w3.org/2021/03/example-security-context/pubKey> .
-`,
-    keyId: 'http://a.example/key1',
-    issuer: 'https://a.example/issuer1',
-    privKey: 'd5GjRrB35YEroMuv2cHotX8V8H57cVUPmohRKFt89mxeD5Bcrbhq3KDxFSN5RKzw4UQGSoJtTCqGMDJJCZ33HsT',
-    pubKey: 'Q2K4ftnrexPPBti1PYAQBFYaw4VPcoY7HqLpWd9GXzd'
-  }
-}
+const SearchParms = parseQueryString(window.location.search);
+console.log(`Page loaded at ${new Date().toISOString()} with search parms:\n${JSON.stringify(SearchParms, null, 2)}`);
 
 // Paint example buttons.
-Object.keys(Examples).forEach(label => {
-  const elt = document.createElement('button');
-  elt.innerText = label
-  elt.onclick = () => fill(Examples[label]);
-  $('#examples')[0].appendChild(elt);
+$('#signGraph')[0].value = ''; // clear out for error messages
+(SearchParms.manifestURL || DefaultManifest).forEach(async (m) => {
+  let verb = 'load';
+  try {
+    const resp = await fetch(m);
+    if (!resp.ok)
+      throw Error(`fetch ${m} returned ${resp.status} ${resp.statusText}`);
+    const text = await resp.text();
+    verb = 'parse';
+    const manifest = m.endsWith('.yaml')
+          ? jsYaml.load(text)
+          : JSON.parse(text);
+    Object.keys(manifest).forEach(label => {
+      const elt = document.createElement('button');
+      elt.innerText = label
+      elt.onclick = () => fill(manifest[label]);
+      $('#manifest')[0].appendChild(elt);
+    })
+  } catch (e) {
+    $('#signGraph')[0].value += `Failed to ${verb} ${m}: ${e.message}\n`;
+  }
 })
 
 // Example button action.
@@ -273,4 +266,14 @@ async function urdnaizeDocs (docs) {
   ));
   return new Uint8Array(concat.buffer, concat.byteOffset, concat.length);
 }
+
+function parseQueryString (query) {
+  if (query[0]==='?') query=query.substr(1); // optional leading '?'
+  const map   = {};
+  query.replace(/([^&,=]+)=?([^&,]*)(?:[&,]+|$)/g, function(match, key, value) {
+    key=decodeURIComponent(key);value=decodeURIComponent(value);
+    (map[key] = map[key] || []).push(value);
+  });
+  return map;
+};
 
