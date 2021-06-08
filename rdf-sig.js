@@ -98726,21 +98726,19 @@ try {
 } catch (er) {}
 
 },{"./iterator.js":309}],311:[function(require,module,exports){
-const { Ed25519KeyPair } = require('crypto-ld');
-const jsonld = require('jsonld');
-// const util = require('./rdf-sig.js');
-const util = require('jsonld-signatures/lib/util.js');
-const graphy = require('graphy');
+const CryptoLd = require('crypto-ld');
+const forge = require('node-forge');
+const {util: {binary: {base58}}} = forge;
 
 module.exports = {
-  Ed25519KeyPair,
-  jsonld,
-  util,
-  graphy,
+  Ed25519KeyPair: CryptoLd.Ed25519KeyPair,
+  jsonld: require('jsonld'),
+  util: require('jsonld-signatures/lib/util.js'),
+  graphy: require('graphy'),
   Buffer: require('buffer').Buffer,
   jsYaml: require('js-yaml'),
-  foo: 123
+  base58: base58,
 }
 
-},{"buffer":78,"crypto-ld":95,"graphy":127,"js-yaml":144,"jsonld":188,"jsonld-signatures/lib/util.js":170}]},{},[311])(311)
+},{"buffer":78,"crypto-ld":95,"graphy":127,"js-yaml":144,"jsonld":188,"jsonld-signatures/lib/util.js":170,"node-forge":212}]},{},[311])(311)
 });

@@ -1,5 +1,6 @@
 ---
 vc-like example:
+  sigKind: jws
   signNode: https://a.example/vc1
   signGraph: |
     PREFIX vc: <https://www.w3.org/2018/credentials#>
@@ -19,6 +20,25 @@ vc-like example:
         sec:proofPurpose sec:assertionMethod ;
         sec:verificationMethod <https://www.w3.org/2021/03/example-security-context/pubKey> .
   keyId: http://a.example/key1
-  issuer: https://a.example/issuer1
   privKey: d5GjRrB35YEroMuv2cHotX8V8H57cVUPmohRKFt89mxeD5Bcrbhq3KDxFSN5RKzw4UQGSoJtTCqGMDJJCZ33HsT
   pubKey: Q2K4ftnrexPPBti1PYAQBFYaw4VPcoY7HqLpWd9GXzd
+
+manu's example:
+  sigKind: proofValue
+  signNode: _:doc1
+  signGraph: |
+    PREFIX scorg: <https://schema.org#>
+    _:doc1 scorg:title "Hello world!".
+  proofNode: _:proof1
+  withProof: |
+    PREFIX dc: <http://purl.org/dc/terms/>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    PREFIX sec: <https://w3id.org/security#>
+    _:proof1 a sec:Ed25519Signature2020 ;
+      dc:created "2021-05-29T19:23:24Z"^^xsd:dateTime ;
+      sec:proofPurpose sec:assertionMethod ;
+      sec:verificationMethod <https://pfps.example/issuer#z6MkjLrk3gKS2nnkeWcmcxiZPGskmesDpuwRBorgHxUXfxnG> .
+  keyId: https://pfps.example/issuer#z6MkjLrk3gKS2nnkeWcmcxiZPGskmesDpuwRBorgHxUXfxnG
+  privKey: d5GjRrB35YEroMuv2cHotX8V8H57cVUPmohRKFt89mxeD5Bcrbhq3KDxFSN5RKzw4UQGSoJtTCqGMDJJCZ33HsT
+  pubKey: Q2K4ftnrexPPBti1PYAQBFYaw4VPcoY7HqLpWd9GXzd
+

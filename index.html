@@ -3,6 +3,7 @@
     <title>RDF Signature Example</title>
     <style>
       button { background-color: lightgreen; }
+      #manifest button { margin: 0 .5ex; }
       .fake-link {
           color: blue;
           /*text-decoration: underline;*/
@@ -16,7 +17,9 @@
       <span>(with CSS from the 90s)</span>
     </div>
     <div style="padding: 3ex 0;">
-      <h2 style="display: inline;">sign</h2>
+      Use <h2 style="display: inline;">Use</h2>
+      <select id="sigKind"><option value="">- pick one -</option><option value="jws">jws</option><option value="proofValue">proofValue</option></select>
+      <h2 style="display: inline;">to sign</h2>
       <input id="signNode" style="width: 32ex;"></input>
       <h2 style="display: inline;">in:</h2>
     </div>
@@ -30,7 +33,6 @@
     <textarea id="withProof" cols=132, rows=8></textarea>
     <h2>and private key:</h2>
     <label for="keyId" style="padding-left: 8em;">keyId:</label> <textarea id="keyId" cols=100, rows=1></textarea><br/>
-    <label for="issuer" style="padding-left: 8em;">issuer:</label> <textarea id="issuer" cols=100, rows=1></textarea><br/>
     <label for="privKey" style="padding-left: 8em;">Base58:</label> <textarea id="privKey" cols=100, rows=1></textarea>
     <div style="padding: 3ex 0;">
       <button id="sign">sign</button>
