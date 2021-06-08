@@ -1,2 +1,2 @@
 # rdf-sig-playground
-online playground for RDF Signatures
+[online playground](https://janeirodigital.github.io/rdf-sig-playground/index?manifestURL=examples/toy.yaml) for RDF Signatures
